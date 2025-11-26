@@ -4,7 +4,7 @@ import React from 'react'
 function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center 
-    bg-gradient-to-br from-emerald-50 via-sage-100 to-green-200 p-4">
+   bg-[#F1F3E0] p-4">
 
       <div className="bg-gradient-to-br from-white via-emerald-50 to-sage-100
       p-6 rounded-xl shadow-xl w-full max-w-sm border border-emerald-200">

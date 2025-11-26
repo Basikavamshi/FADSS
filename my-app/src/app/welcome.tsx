@@ -2,12 +2,20 @@
 import { useRef } from "react"
 
 function Welcome() {
+<<<<<<< HEAD
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const controlVideo = (time: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime = time;
       videoRef.current.pause();
+=======
+  const videoRef=useRef<HTMLVideoElement|null>(null);
+  const controlVideo=(time:number)=>{
+    if(videoRef.current){
+      videoRef.current.currentTime=time;
+      videoRef.current.play();
+>>>>>>> 8bc13181775550e5a3ccc1b34b389e2d1a33debf
     }
   };
 
