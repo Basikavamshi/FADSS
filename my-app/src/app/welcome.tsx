@@ -5,7 +5,7 @@ function Welcome() {
   const controlVideo=(time:number)=>{
     if(videoRef.current){
       videoRef.current.currentTime=time;
-      videoRef.current.pause();
+      videoRef.current.play();
     }
     
   }
