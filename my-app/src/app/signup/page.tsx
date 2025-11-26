@@ -38,6 +38,20 @@ function Signup() {
 
   const PasswordInput = ({ name, label, show, setShow }) => (
     <div>
+<<<<<<< HEAD
+        <div>create your account </div>
+        <div>
+           <label></label>
+           <input type='text' placeholder='enter your username'/>
+            <label></label>
+           <input type='password' placeholder='enter your password'/>
+          
+        </div>
+        <div >
+            <button type='button'>Login</button>
+        </div>
+      
+=======
       <label className="block mb-2 text-sm font-semibold text-gray-700">{label}</label>
       <div className="relative">
         <input
@@ -66,6 +80,7 @@ function Signup() {
           </svg>
         </button>
       </div>
+>>>>>>> 8bc13181775550e5a3ccc1b34b389e2d1a33debf
     </div>
   );
 
