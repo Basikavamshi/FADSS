@@ -1,8 +1,11 @@
-"use client"
+'use client'
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 function Signup() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -15,25 +18,94 @@ function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [contactMethod, setContactMethod] = useState('email');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    
+    // Validation
+    if (!formData.firstName || !formData.lastName) {
+      alert('Please enter your first and last name');
+      return;
+    }
+    
     if (contactMethod === 'email' && !formData.email) {
       alert('Please enter your email address');
       return;
     }
+    
     if (contactMethod === 'phone' && !formData.phone) {
       alert('Please enter your phone number');
       return;
     }
+    
+    if (!formData.password || formData.password.length < 6) {
+      alert('Password must be at least 6 characters long');
+      return;
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    console.log('Form submitted:', formData, 'Contact method:', contactMethod);
+    
+    if (!formData.address) {
+      alert('Please enter your address');
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Get existing users from localStorage or initialize empty array
+    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+    
+    // Check if user already exists
+    const userExists = existingUsers.some(user => 
+      user.email === formData.email || user.phone === formData.phone
+    );
+    
+    if (userExists) {
+      setIsLoading(false);
+      alert('User with this email or phone already exists!');
+      return;
+    }
+
+    // Create new user object
+    const newUser = {
+      id: Date.now().toString(),
+      username: formData.email || formData.phone,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password, // In real app, this should be hashed!
+      address: formData.address,
+      contactMethod: contactMethod,
+      createdAt: new Date().toISOString()
+    };
+
+    // Add new user to array
+    existingUsers.push(newUser);
+    
+    // Save to localStorage
+    localStorage.setItem('users', JSON.stringify(existingUsers));
+    
+    console.log('User registered successfully:', newUser);
+    
+    // Simulate API call delay
+    setTimeout(() => {
+      setIsLoading(false);
+      alert('Account created successfully! Please login.');
+      router.push('/login');
+    }, 1000);
   };
 
   const PasswordInput = ({ name, label, show, setShow }) => (
@@ -46,12 +118,14 @@ function Signup() {
           value={formData[name]}
           onChange={handleChange}
           placeholder={`Enter your ${label.toLowerCase()}`}
-          required
-          className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl text-sm focus:border-purple-600 focus:outline-none transition-colors"
+          className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl text-sm focus:border-green-600 focus:outline-none transition-colors"
         />
         <button
           type="button"
-          onClick={() => setShow(!show)}
+          onClick={(e) => {
+            e.preventDefault();
+            setShow(!show);
+          }}
           className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -71,7 +145,8 @@ function Signup() {
 
   const SocialButton = ({ provider, icon }) => (
     <button
-      onClick={() => console.log(`Login with ${provider}`)}
+      type="button"
+      onClick={() => console.log(`Signup with ${provider}`)}
       className="w-14 h-14 flex items-center justify-center border-2 border-gray-200 rounded-full hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 hover:shadow-md"
       title={`Continue with ${provider}`}
     >
@@ -80,9 +155,14 @@ function Signup() {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-5">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 p-5">
       <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md">
         <div className="text-center mb-8">
+          <div className="inline-block p-3 bg-green-100 rounded-full mb-4">
+            <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+          </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Create Account</h1>
           <p className="text-gray-600 text-sm">Join our farmer advisory platform</p>
         </div>
@@ -100,8 +180,7 @@ function Signup() {
                   value={formData[field]}
                   onChange={handleChange}
                   placeholder={field === 'firstName' ? 'First name' : 'Last name'}
-                  required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-purple-600 focus:outline-none transition-colors"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-green-600 focus:outline-none transition-colors"
                 />
               </div>
             ))}
@@ -118,7 +197,7 @@ function Signup() {
                     value={method}
                     checked={contactMethod === method}
                     onChange={(e) => setContactMethod(e.target.value)}
-                    className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
+                    className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
                   />
                   <span className="ml-2 text-sm text-gray-700">
                     {method === 'email' ? 'Email' : 'Phone Number'}
@@ -134,7 +213,7 @@ function Signup() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-purple-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-green-600 focus:outline-none transition-colors"
               />
             )}
 
@@ -145,7 +224,7 @@ function Signup() {
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="Enter your phone number"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-purple-600 focus:outline-none transition-colors"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-green-600 focus:outline-none transition-colors"
               />
             )}
           </div>
@@ -161,16 +240,16 @@ function Signup() {
               onChange={handleChange}
               placeholder="Enter your farm/residence address"
               rows="3"
-              required
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-purple-600 focus:outline-none transition-colors resize-none"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-green-600 focus:outline-none transition-colors resize-none"
             />
           </div>
 
           <button
             onClick={handleSubmit}
-            className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-indigo-700 text-white rounded-xl text-base font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+            disabled={isLoading}
+            className="w-full py-3.5 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-xl text-base font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Create Account
+            {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </div>
 
@@ -205,7 +284,9 @@ function Signup() {
 
         <div className="text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <a href="/login" className="text-purple-600 font-semibold hover:underline">Sign in</a>
+          <Link href="/login" className="text-green-600 font-semibold hover:underline">
+            Sign in
+          </Link>
         </div>
       </div>
     </div>
