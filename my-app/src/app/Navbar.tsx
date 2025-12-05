@@ -40,11 +40,20 @@ function Navbar() {
           ))}
 
           {auth?
-            <div>
+            <div className="grid grid-cols-1 grid-rows-1 relative w-full h-full justify-center align-middle" >
               <span className="bg-green-600 text-white px-1 py-1 rounded-4xl font-medium hover:bg-green-700 hover:shadow-lg transition-all duration-300 cursor-pointer inline-block"><UserRound/></span>
-              <div className="grid grid-cols-1 grid-flow-row border-2 border-rose-500">
-                <span>username:</span>
-                <span>email_id</span>
+              <div className="grid absolute top-[150%] right-1/5 grid-cols-1 grid-flow-row border-2 border-rose-500 w-50 h-60 overflow-hidden bg-white p-3">
+                <div className="grid grid-cols-1 grid-rows-2 border-2 h-full w-full p-2 ">
+                   <span className="text-black">vamshi farmer</span>
+                   <span className="text-black">vamshibasika@gmail.com</span>
+                </div>
+                <div className="grid grid-cols-1 grid-flow-row">
+                  <span className="text-black">Phone : 9392803389</span>
+                  <span className="text-black">Location :hyderbad</span>
+                  <button >Edit Profile</button>
+                  <button>Logout</button>
+                </div>
+               
                 
               </div>
             </div>

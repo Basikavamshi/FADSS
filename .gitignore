@@ -28,3 +28,6 @@ __pycache__
 datasets
 AIModel
 db.sqlite3
+
+#next
+next.config.ts
