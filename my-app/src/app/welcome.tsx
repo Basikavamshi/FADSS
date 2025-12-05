@@ -1,20 +1,15 @@
 'use client'
 import { useRef } from "react"
-import { useRouter } from "next/navigation"
+
 
 function Welcome() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const router = useRouter();
 
   const controlVideo = (time: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime = time;
       videoRef.current.play();
     }
-  };
-
-  const navigateToLogin = () => {
-    router.push('/login');
   };
 
   const features = [
@@ -57,13 +52,12 @@ function Welcome() {
             {features.map((feature, i) => (
               <li
                 key={i}
-                onClick={navigateToLogin}
                 onMouseEnter={() => controlVideo(feature.time)}
                 className={`
                   flex items-center gap-3 p-4 
                   bg-white rounded-lg shadow-md 
                   hover:shadow-lg hover:scale-[1.03] 
-                  transition-all duration-300 cursor-pointer 
+                  transition-all duration-300
                   border-l-4 border-${feature.color}
                 `}
               >
