@@ -25,3 +25,6 @@ yarn-error.log*
 .venv
 migrations
 __pycache__
+datasets
+AIModel
+db.sqlite3
