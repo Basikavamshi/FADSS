@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
 import path from 'path'
 function Login() {
@@ -9,10 +10,12 @@ function Login() {
     "identifier":"",
     "password":"",})
   const cookie=new Cookies();
+  const router=useRouter();
   const inputHandler=(e)=>{
        setuserdata({...userdata,[e.target.name]:e.target.value})
   }
   const {identifier,password}=userdata;
+ 
   const HandleForm=()=>{
     axios.post("http://127.0.0.1:8000/login/",userdata,{headers:{
       "Content-Type":"application/json"
@@ -30,7 +33,9 @@ function Login() {
     }).catch((e)=>{
       console.log(e)
     })
+
   }
+
   return (
     <div className="min-h-screen flex items-center justify-center 
    bg-[#F1F3E0] p-4">

@@ -81,6 +81,7 @@ class LoginSerializer(serializers.Serializer):
         return {
             "refresh": str(refresh),
             "access": str(refresh.access_token),
+            "auth":True,
             "user": {
                 "id": user.id,
                 "first_name": user.first_name,

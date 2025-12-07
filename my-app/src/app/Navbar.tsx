@@ -1,18 +1,45 @@
 'use client'
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserRound } from 'lucide-react';
 import Cookies from "universal-cookie";
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [auth,setauth]=useState(true);
+  const [auth,setauth]=useState(false);
+  const [Profile,SetProfile]=useState(false)
+  const [userdetails,setuserdetails]=useState({
+    "username":"",
+    "email":"",
+    "phone":null,
+    "address":""
+  })
   const router = useRouter();
   const cookies=new Cookies();
+  useEffect(()=>{
+      setauth(cookies.get('auth'))
+      setuserdetails(
+        {
+          "username":cookies.get("firstname"),
+          "email":cookies.get("email"),
+          "phone":cookies.get("phone"),
+          "address":cookies.get("address")
+        }
+      )
+  },[])
+  const {username,email,phone,address}=userdetails
   const navigateToLogin = (item) => {
     router.push(`/${item}`);
   };
-
+  const profilepage=()=>{
+      if(Profile){
+         SetProfile(false)
+      }
+      else{
+        SetProfile(true)
+      }
+  }
   return (
     <nav className="bg-white shadow-md border-b-2 border-green-100 px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -30,7 +57,7 @@ function Navbar() {
             <div 
               key={i} 
               className="group cursor-pointer"
-              onClick={()=>navigateToLogin(item)}
+              onClick={()=>navigateToLogin(item.toString())}
             >
               <span className="text-gray-700 font-medium hover:text-green-600 transition-colors duration-200">
                 {item}
@@ -41,24 +68,24 @@ function Navbar() {
 
           {auth?
             <div className="grid grid-cols-1 grid-rows-1 relative w-full h-full justify-center align-middle" >
-              <span className="bg-green-600 text-white px-1 py-1 rounded-4xl font-medium hover:bg-green-700 hover:shadow-lg transition-all duration-300 cursor-pointer inline-block"><UserRound/></span>
-              <div className="grid absolute top-[150%] right-1/5 grid-cols-1 grid-flow-row border-2 border-rose-500 w-50 h-60 overflow-hidden bg-white p-3">
-                <div className="grid grid-cols-1 grid-rows-2 border-2 h-full w-full p-2 ">
-                   <span className="text-black">vamshi farmer</span>
-                   <span className="text-black">vamshibasika@gmail.com</span>
+              <span className="bg-green-600 text-white px-1 py-1 rounded-4xl font-medium hover:bg-green-700 hover:shadow-lg transition-all duration-300 cursor-pointer inline-block" onClick={profilepage}><UserRound/></span>
+              <div className={`${Profile?"grid":"hidden"} absolute top-[150%] right-1/5 grid-cols-1 grid-flow-row rounded-sm w-50 h-60 overflow-hidden bg-white p-3 shadow-2xl shadow-emerald-200`}>
+                <div className={`grid grid-cols-1 grid-rows-2 border-2 h-full w-full p-2 justify-items-start`}>
+                   <span className="text-black text-[1em] ">{username} farmer</span>
+                   <span className="text-black text-[0.8em]">{email}</span>
                 </div>
-                <div className="grid grid-cols-1 grid-flow-row">
-                  <span className="text-black">Phone : 9392803389</span>
-                  <span className="text-black">Location :hyderbad</span>
-                  <button >Edit Profile</button>
-                  <button>Logout</button>
+                <div className="grid grid-cols-1 grid-flow-row justify-start justify-items-start">
+                  <span className="text-black">Phone : {phone}</span>
+                  <span className="text-black">Location :{address}</span>
+                  <button className="text-black">Edit Profile</button>
+                  <button className="text-red-500">Logout</button>
                 </div>
                
                 
               </div>
             </div>
             :<span 
-            onClick={navigateToLogin}
+            onClick={()=>navigateToLogin('login')}
             className="bg-green-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-green-700 hover:shadow-lg transition-all duration-300 cursor-pointer inline-block"
           >
             Login
