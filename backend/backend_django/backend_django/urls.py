@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from backend_app.views import RegisterView, LoginView,ChatModelView,CropRecommendationView
+from backend_app.views import RegisterView, LoginView,ChatModelView,CropRecommendationView,IrrigationSchedulingView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +26,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path("chatbot/", ChatModelView.as_view()),
     path('recommendation/',CropRecommendationView.as_view()),
+    path('irrigationScheduling/',IrrigationSchedulingView.as_view()),
 ]
 
 urlpatterns +=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)

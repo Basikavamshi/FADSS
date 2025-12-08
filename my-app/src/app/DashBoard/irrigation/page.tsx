@@ -2,32 +2,24 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Droplets, Calendar, Clock } from "lucide-react";
-
+import axios from "axios";
+import { useEffect } from "react";
 function IrrigationScheduling() {
   const router = useRouter();
   const [cropType, setCropType] = useState("");
   const [fieldSize, setFieldSize] = useState("");
   const [soilMoisture, setSoilMoisture] = useState("medium");
-  const [schedule, setSchedule] = useState(null);
+  const [schedule,setSchedule]=useState([])
+  const [Data,setData]=useState([])
 
-  const crops = ["Rice", "Wheat", "Cotton", "Sugarcane", "Vegetables", "Pulses"];
-
-  const handleGenerateSchedule = () => {
-    const mockSchedule = {
-      frequency: "Every 3 days",
-      amount: "25mm per irrigation",
-      duration: "2 hours",
-      bestTime: "Early morning (6-8 AM)",
-      nextIrrigation: "Tomorrow, 6:00 AM",
-      weeklyPlan: [
-        { day: "Monday", time: "6:00 AM", duration: "2 hrs", amount: "25mm" },
-        { day: "Thursday", time: "6:00 AM", duration: "2 hrs", amount: "25mm" },
-        { day: "Sunday", time: "6:00 AM", duration: "2 hrs", amount: "25mm" },
-      ]
-    };
-    setSchedule(mockSchedule);
-  };
-
+  const handleIrrigationScheduling=()=>{
+     axios.post("http://127.0.0.1:8000/irrigationScheduling/",{
+      "crop_type":cropType,
+      "field_size":fieldSize,
+      "soil_moisture_level":soilMoisture,
+     }).then((res)=>setData(res.data.data)).then((data)=>console.log(Data)).catch((e)=>console.log(e))
+  }
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-100">
       {/* Header */}
@@ -65,16 +57,8 @@ function IrrigationScheduling() {
             {/* Crop Type */}
             <div>
               <label className="block mb-2 text-sm font-semibold text-gray-700">Crop Type</label>
-              <select
-                value={cropType}
-                onChange={(e) => setCropType(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-blue-600 focus:outline-none transition-colors"
-              >
-                <option value="">Select crop type</option>
-                {crops.map((crop) => (
-                  <option key={crop} value={crop}>{crop}</option>
-                ))}
-              </select>
+              <input type="input" value={cropType} onChange={(e) => setCropType(e.target.value)} className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-blue-600 focus:outline-none transition-colors"
+              />
             </div>
 
             {/* Field Size */}
@@ -112,7 +96,7 @@ function IrrigationScheduling() {
 
           {/* Submit Button */}
           <button
-            onClick={handleGenerateSchedule}
+            onClick={handleIrrigationScheduling}
             className="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-blue-600 to-cyan-700 text-white rounded-xl text-base font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
           >
             <Calendar size={20} />
@@ -121,16 +105,19 @@ function IrrigationScheduling() {
         </div>
 
         {/* Schedule Results */}
-        {schedule && (
+        {schedule.length>0 && (
           <div className="space-y-6">
             {/* Quick Stats */}
+          { Data.map((value,item)=>{
+              return(
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+             
               <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
                 <div className="flex items-center gap-3 mb-2">
                   <Droplets className="text-blue-600" size={24} />
                   <h3 className="text-gray-600 text-sm font-semibold">Frequency</h3>
                 </div>
-                <p className="text-2xl font-bold text-gray-800">{schedule.frequency}</p>
+                <p className="text-2xl font-bold text-gray-800">{value["irrigation_frequency_days"]}</p>
               </div>
 
               <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-cyan-500">
@@ -156,14 +143,16 @@ function IrrigationScheduling() {
                 </div>
                 <p className="text-xl font-bold text-gray-800">{schedule.bestTime}</p>
               </div>
+           
             </div>
+             )})}
 
             {/* Weekly Schedule */}
             <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Weekly Irrigation Plan</h2>
               
               <div className="space-y-4">
-                {schedule.weeklyPlan.map((item, i) => (
+                {schedule.map((item, i) => (
                   <div
                     key={i}
                     className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-colors"

@@ -15,7 +15,7 @@ class RecommendationModel():
         self.encoder=joblib.load(r'C:\Users\User\Desktop\FADASS\backend\backend_django\AIModel\encoders.pkl')
         self.client = InferenceClient(
             model="meta-llama/Llama-3.1-8B-Instruct",
-            token="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"
+            token="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"
         )
     def Wheather(self,lat,lon):
         cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)

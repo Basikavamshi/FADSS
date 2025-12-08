@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import Cookies from 'universal-cookie'
 import path from 'path'
 function Login() {
@@ -29,12 +29,20 @@ function Login() {
       cookie.set('email',res.data['user'].email,{path:'/'})
       cookie.set('phone',res.data['user'].phone,{path:'/'})
       cookie.set('address',res.data['user'].address,{path:'/'})
-
-    }).catch((e)=>{
+      return res.data['auth']
+    }).then((auth)=>
+      auth?router.push('/'):console.log("not authenticated")
+  ).catch((e)=>{
       console.log(e)
     })
 
   }
+  useEffect(()=>{
+    if(cookie.get('auth')){
+      router.push('/')
+    }
+  },[])
+
 
   return (
     <div className="min-h-screen flex items-center justify-center 
