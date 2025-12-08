@@ -23,19 +23,16 @@ function Welcome() {
     { icon: "🌱", text: "Fertilizer Usage", time: 20, color: "yellow-500" },
     { icon: "🐛", text: "Pest Management", time: 30, color: "red-500" },
   ];
+  const colorMap: Record<string, string> = {
+  "green-500": "border-green-500",
+  "blue-500": "border-blue-500",
+  "yellow-500": "border-yellow-500",
+  "red-500": "border-red-500",
+};
 
   return (
-    <div className="
-      min-h-screen 
-      bg-gradient-to-br 
-      from-green-50 to-emerald-100 
-      grid grid-cols-1 
-      lg:grid-cols-[0.6fr_0.4fr] 
-      gap-6 lg:gap-10 
-      items-center 
-      justify-center 
-      p-4 sm:p-6 lg:p-12
-    ">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 grid grid-cols-1 lg:grid-cols-[0.6fr_0.4fr] gap-6 lg:gap-10 items-center justify-center p-4 sm:p-6 lg:p-12">
+
       
       {/* Left Content */}
       <div className="flex flex-col gap-6 max-w-2xl mx-auto">
@@ -64,7 +61,7 @@ function Welcome() {
                   bg-white rounded-lg shadow-md 
                   hover:shadow-lg hover:scale-[1.03] 
                   transition-all duration-300 cursor-pointer 
-                  border-l-4 border-${feature.color}
+                  border-l-4 ${colorMap[feature.color]}
                 `}
               >
                 <span className="text-2xl">{feature.icon}</span>

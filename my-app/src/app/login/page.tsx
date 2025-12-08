@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import Cookies from 'universal-cookie'
 import path from 'path'
 function Login() {
@@ -29,6 +29,8 @@ function Login() {
       cookie.set('email',res.data['user'].email,{path:'/'})
       cookie.set('phone',res.data['user'].phone,{path:'/'})
       cookie.set('address',res.data['user'].address,{path:'/'})
+
+      router.push('/DashBoard');
 
     }).catch((e)=>{
       console.log(e)
