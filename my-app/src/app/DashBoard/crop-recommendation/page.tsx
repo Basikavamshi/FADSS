@@ -14,15 +14,6 @@ function CropSelection() {
   const soilTypes = ["Loamy", "Clay", "Sandy", "Silt", "Peaty", "Chalky"];
   const seasons = ["Kharif", "Rabi", "Zaid", "Perennial"];
 
-  /* const cropData = [
-    { name: "Rice", icon: "🌾", soil: "Clay", season: "Kharif", yield: "High", water: "High", npk: { n: [80, 120], p: [40, 60], k: [40, 60] } },
-    { name: "Wheat", icon: "🌾", soil: "Loamy", season: "Rabi", yield: "Medium", water: "Medium", npk: { n: [80, 120], p: [40, 60], k: [20, 40] } },
-    { name: "Cotton", icon: "🌱", soil: "Sandy", season: "Kharif", yield: "Medium", water: "Medium", npk: { n: [60, 100], p: [30, 50], k: [30, 50] } },
-    { name: "Sugarcane", icon: "🎋", soil: "Loamy", season: "Perennial", yield: "High", water: "High", npk: { n: [200, 300], p: [80, 120], k: [80, 120] } },
-    { name: "Pulses", icon: "🫘", soil: "Clay", season: "Rabi", yield: "Low", water: "Low", npk: { n: [15, 30], p: [40, 60], k: [20, 40] } },
-    { name: "Vegetables", icon: "🥕", soil: "Loamy", season: "Zaid", yield: "Medium", water: "Medium", npk: { n: [80, 150], p: [50, 80], k: [50, 80] } },
-  ]; */
-
   const handleGetRecommendations = () => {
       axios.post("http://127.0.0.1:8000/recommendation/",{
         "soil_type":selectedSoil,

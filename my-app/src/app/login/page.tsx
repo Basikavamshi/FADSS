@@ -29,14 +29,27 @@ function Login() {
       cookie.set('email',res.data['user'].email,{path:'/'})
       cookie.set('phone',res.data['user'].phone,{path:'/'})
       cookie.set('address',res.data['user'].address,{path:'/'})
+ HEAD
 
       router.push('/DashBoard');
 
     }).catch((e)=>{
+
+      return res.data['auth']
+    }).then((auth)=>
+      auth?router.push('/'):console.log("not authenticated")
+  ).catch((e)=>{
+
       console.log(e)
     })
 
   }
+  useEffect(()=>{
+    if(cookie.get('auth')){
+      router.push('/')
+    }
+  },[])
+
 
   return (
     <div className="min-h-screen flex items-center justify-center 

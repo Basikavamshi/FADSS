@@ -40,6 +40,17 @@ function Navbar() {
         SetProfile(true)
       }
   }
+  const hanldleLogout=()=>{
+    cookies.remove('auth',{path:'/'})
+    cookies.remove('refresh',{path:'/'})
+    cookies.remove('access',{path:'/'})
+    cookies.remove('firstname',{path:'/'})
+    cookies.remove('lastname',{path:'/'})
+    cookies.remove('email',{path:'/'})
+    cookies.remove('phone',{path:'/'})
+    cookies.remove('address',{path:'/'})
+    router.push('/')
+  }
   return (
     <nav className="bg-white shadow-md border-b-2 border-green-100 px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -78,7 +89,7 @@ function Navbar() {
                   <span className="text-black">Phone : {phone}</span>
                   <span className="text-black">Location :{address}</span>
                   <button className="text-black">Edit Profile</button>
-                  <button className="text-red-500">Logout</button>
+                  <button className="text-red-500" onClick={hanldleLogout}>Logout</button>
                 </div>
                
                 

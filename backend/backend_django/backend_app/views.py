@@ -9,6 +9,7 @@ from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework.response import Response
 from django.http import JsonResponse
 from .recommendationModel import RecommendationModel
+from .irrigationModel import IrrigationModel
 import json
 # Create your views here.
 
@@ -46,5 +47,13 @@ class CropRecommendationView(APIView):
         model=RecommendationModel()
         user_inputs=request.data 
         data=model.Predictor(N=user_inputs["N"],P=user_inputs["P"],K=user_inputs["K"],PH=user_inputs["PH"],address=user_inputs["location"],soil_type=user_inputs["soil_type"],season=user_inputs['season'])
+    
+        return JsonResponse({"data":data})
+class IrrigationSchedulingView(APIView):
+    permission_classes=[permissions.AllowAny]
+    def post(self,request):
+        model=IrrigationModel()
+        user_inputs=request.data 
+        data=model.Predictor(cropType=user_inputs['crop_type'],fieldSize=user_inputs['field_size'],soilMoistureLevel=user_inputs['soil_moisture_level'])
     
         return JsonResponse({"data":data})

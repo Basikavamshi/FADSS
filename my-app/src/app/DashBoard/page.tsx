@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { LogOut, User } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import Navbar from "../Navbar";
 function Dashboard() {
   const router = useRouter();
   const [userName, setUserName] = useState("Farmer");
@@ -86,27 +86,7 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
       {/* Header */}
-      <header className="bg-white shadow-md border-b-2 border-green-100 px-4 sm:px-6 py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-            FADSS Dashboard
-          </span>
-          
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-lg">
-              <User size={20} className="text-green-600" />
-              <span className="text-gray-700 font-medium hidden sm:block">{userName}</span>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200"
-            >
-              <LogOut size={20} />
-              <span className="hidden sm:block">Logout</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Navbar/>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-12">
