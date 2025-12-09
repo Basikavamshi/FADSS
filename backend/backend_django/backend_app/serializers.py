@@ -3,9 +3,14 @@ from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.db.models import Q
 
-# -----------------------------
+from .models import (
+    ChatSession, ChatMessage, LiveChatMessage,
+    LiveChatRoom, Notification, PlantDisease
+)
+
+# ---------------------------------------------------
 # Registration Serializer
-# -----------------------------
+# ---------------------------------------------------
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -14,20 +19,22 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'password']
 
     def create(self, validated_data):
-        # Pop password from validated data
+        # Extract password
         password = validated_data.pop('password')
-        # Set username automatically
+
+        # Auto-generate username
         validated_data['username'] = validated_data['first_name'] + validated_data['last_name']
-        # Create user object
+
+        # Create user
         user = User(**validated_data)
         user.set_password(password)
         user.save()
         return user
 
 
-# -----------------------------
+# ---------------------------------------------------
 # Login Serializer
-# -----------------------------
+# ---------------------------------------------------
 class LoginSerializer(serializers.Serializer):
     identifier = serializers.CharField()  # email or phone
     password = serializers.CharField(write_only=True)
@@ -44,7 +51,6 @@ class LoginSerializer(serializers.Serializer):
         if not user.check_password(password):
             raise serializers.ValidationError("Invalid credentials")
 
-        # Generate JWT tokens
         refresh = RefreshToken.for_user(user)
 
         return {
@@ -60,3 +66,70 @@ class LoginSerializer(serializers.Serializer):
                 "address": user.address,
             }
         }
+
+
+# ---------------------------------------------------
+# Chat Serializers
+# ---------------------------------------------------
+class ChatMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatMessage
+        fields = ['id', 'message', 'bot', 'timestamp']
+
+
+class ChatSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatSession
+        fields = ['id', 'session_name', 'created_at', 'updated_at']
+
+
+class ChatSessionDetailSerializer(serializers.ModelSerializer):
+    chats = ChatMessageSerializer(source='messages', many=True, read_only=True)
+
+    class Meta:
+        model = ChatSession
+        fields = ['id', 'session_name', 'created_at', 'updated_at', 'chats']
+
+
+# ---------------------------------------------------
+# Live Chat Serializers
+# ---------------------------------------------------
+class LiveChatMessageSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
+        model = LiveChatMessage
+        fields = ['id', 'username', 'message', 'file_url', 'file_type', 'timestamp']
+
+
+class LiveChatRoomSerializer(serializers.ModelSerializer):
+    messages = LiveChatMessageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = LiveChatRoom
+        fields = ['id', 'name', 'created_at', 'messages']
+
+
+# ---------------------------------------------------
+# Notification Serializer
+# ---------------------------------------------------
+class NotificationSerializer(serializers.ModelSerializer):
+    time = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Notification
+        fields = ['id', 'title', 'message', 'category', 'priority', 'unread', 'time', 'created_at']
+
+    def get_time(self, obj):
+        from django.utils.timesince import timesince
+        return f"{timesince(obj.created_at)} ago"
+
+
+# ---------------------------------------------------
+# Plant Disease Serializer
+# ---------------------------------------------------
+class PlantDiseaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlantDisease
+        fields = ['id', 'image', 'disease_name', 'confidence', 'recommendations', 'created_at']
+        read_only_fields = ['disease_name', 'confidence', 'recommendations']
